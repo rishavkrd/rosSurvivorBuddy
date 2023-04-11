@@ -28,14 +28,14 @@ motor_pos = [0, 0, 0, 0]
 global_goal = [0,0,0,0]
 global_speed = 1
 
-mp_drawing = mp.solutions.drawing_utils
-mp_drawing_styles = mp.solutions.drawing_styles
-mp_hands = mp.solutions.hands
+# mp_drawing = mp.solutions.drawing_utils
+# mp_drawing_styles = mp.solutions.drawing_styles
+# mp_hands = mp.solutions.hands
 
 # STEP 2: Create an GestureRecognizer object.
-base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
-options = vision.GestureRecognizerOptions(base_options=base_options)
-recognizer = vision.GestureRecognizer.create_from_options(options)
+# base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
+# options = vision.GestureRecognizerOptions(base_options=base_options)
+# recognizer = vision.GestureRecognizer.create_from_options(options)
 
 images = []
 results = []
@@ -43,13 +43,13 @@ import signal
 import time
 
 class GracefulKiller:
-  kill_now = False
-  def __init__(self):
-    signal.signal(signal.SIGINT, self.exit_gracefully)
-    signal.signal(signal.SIGTERM, self.exit_gracefully)
+    kill_now = False
+    def __init__(self):
+        signal.signal(signal.SIGINT, self.exit_gracefully)
+        signal.signal(signal.SIGTERM, self.exit_gracefully)
 
-  def exit_gracefully(self, *args):
-    self.kill_now = True
+    def exit_gracefully(self, *args):
+        self.kill_now = True
 
 killer = GracefulKiller()
 
@@ -93,7 +93,7 @@ class Motor_Schema:
         return self.motor_pos != self.global_goal
 
     def motor_control(self):
-            print ("motor control thread: ",threading.current_thread())
+            # print ("motor control thread: ",threading.current_thread())
             while not killer.kill_now:
                 
                 transient_pos = self.motor_pos
@@ -119,7 +119,7 @@ class Motor_Schema:
                         transient_pos[3] = transient_pos[3]+1
                     elif(goal[3]<self.motor_pos[3]):
                         transient_pos[3] = transient_pos[3]-1
-                    print("Movement values: ",transient_pos)
+                    # print("Movement values: ",transient_pos)
                     self.motor_pos = transient_pos
                     
                     twist.twist.linear.x = self.motor_pos[0]
@@ -163,11 +163,12 @@ class DancePerformance:
                 print("----------------------------------- Next step at: ",dance_release_time ," current time: ",dance_clock)
                 while dance_clock < dance_release_time and not killer.kill_now:
                     # random_buddy = random.randint(0,3)
-                    self.freeStyle.perform()
+                    #self.freeStyle.perform()
                     time.sleep(0.01)
                     pass
                     
                 dance.perform()
+                print("time: ", dance_clock)
         print("============================================ Thank you For Watching !!! ================================")
         print("                                                  Hope you Enjoyed                 ")
         
@@ -202,7 +203,8 @@ class DanceStep:
 class FreeStyle(DanceStep):
     def perform(self):
         steps = [[10, 0, 0, 20, 10], [5, 20, 0, 30, 5], [-10, 0, 0, 0, 15], [-5, 0, 0, 20, 5]]
-        self.addMoves(steps)
+        for step in steps:
+            self.addMoves(step)
         super().perform()
     # def perform(self, id):
         # if id>3:
@@ -273,29 +275,85 @@ class GenericBehavior(object):
         
     def dancePerformance(self):
         simpleDanceSteps = [] 
-        steps1 = [[0, 0, 0, 0, 2], [10, 0, 0, 20, 10], [5, 20, 0, 30, 5], [-10, 0, 0, 0, 15], [-5, 0, 0, 20, 5], [-5, -20, 0, 30, 10], [5, 0, 0, 0, 15], [0, 0, 10, 45, 10], [5, -10, -10, 0, 5], [-10, 0, 0, 0, 15], [-5, 0, 0, 20, 5], [-5, -20, 0, 30, 10],  [0, 0, -10, -45, 10], [5, 10, -10, 0, 5], [-5, -5, 10, 0, 10], [10, 0, 0, 20, 10], [5, 20, 0, 30, 5], [-10, 0, 0, 0, 15], [-5, 0, 0, 20, 5], [-5, -20, 0, 30, 10], [5, 0, 0, 0, 15], [0, 0, 10, 45, 10], [5, -10, -10, 0, 5], [-5, 5, 10, 0, 10]]
+        
+        # face wave
+        side_w_1 = [[0, 0, 0, 0, 4], [0, -20, 0, 0, 4], [0, 0, 0, 0, 4], [0, 20, 0, 0, 4],
+                [0, 0, 0, 0, 4], [0, -20, 0, 0, 4], [0, 0, 0, 0, 4], [0, 20, 0, 0, 4], [0, 0, 0, 0, 4]]
+        side_w_2 = [[0, 0, 0, 0, 4], [0, 20, 0, 0, 4], [0, 0, 0, 0, 4], [0, -20, 0, 0, 4],
+                [0, 0, 0, 0, 4], [0, 20, 0, 0, 4], [0, 0, 0, 0, 4], [0, -20, 0, 0, 4], [0, 0, 0, 0, 4]]
+       
+        # torso twist 
+        side_t_1 = [[0, 0, 0, 0, 4], [0, -20, 20, 0, 4], [0, 0, 0, 0, 5], [0, 20, -20, 0, 4],
+                [0, 0, 0, 0, 4], [0, -20, 20, 0, 4], [0, 0, 0, 0, 5], [0, 20, -20, 0, 4], [0, 0, 0, 0, 4]]        
+        side_t_2 = [[0, 0, 0, 0, 4], [0, 20, -20, 0, 4], [0, 0, 0, 0, 5], [0, -20, 20, 0, 4],
+                [0, 0, 0, 0, 4], [0, 20, -20, 0, 4], [0, 0, 0, 0, 5], [0, -20, 20, 0, 4], [0, 0, 0, 0, 4]]        
+        
+        # torso bend
+        side_b_1 = [[0, 0, 0, 0, 4], [0, -20, -20, 0, 4], [0, 0, 0, 0, 5], [0, 20, 20, 0, 4],
+                [0, 0, 0, 0, 4], [0, -20, -20, 0, 4], [0, 0, 0, 0, 5], [0, 20, 20, 0, 4], [0, 0, 0, 0, 4]]
+        side_b_2 = [[0, 0, 0, 0, 4], [0, 20, 20, 0, 4], [0, 0, 0, 0, 5], [0, -20, -20, 0, 4],
+                [0, 0, 0, 0, 4], [0, 20, 20, 0, 4], [0, 0, 0, 0, 5], [0, -20, -20, 0, 4], [0, 0, 0, 0, 4]]
+
+        # torso wave
+        body_t_1 = [[0, 0, 0, 0, 4], [-20, -20, 20, 0, 4], [0, 0, 0, 0, 5], [20, 20, -20, 0, 4],
+                    [0, 0, 0, 0, 4], [-20, 20, -20, 0, 4], [0, 0, 0, 0, 5], [20, -20, 20, 0, 4],
+                    [0, 0, 0, 0, 4], [-20, -20, 20, 0, 4], [0, 0, 0, 0, 5], [20, 20, -20, 0, 4],         
+                    [0, 0, 0, 0, 4], [-20, 20, -20, 0, 4], [0, 0, 0, 0, 5], [20, -20, 20, 0, 4], [0, 0, 0, 0, 4]]
+
+        body_t_2 = [[0, 0, 0, 0, 4], [-20, 20, 20, 0, 4], [0, 0, 0, 0, 5], [20, -20, -20, 0, 4],
+                    [0, 0, 0, 0, 4], [-20, -20, -20, 0, 4], [0, 0, 0, 0, 5], [20, 20, 20, 0, 4],
+                    [0, 0, 0, 0, 4], [-20, 20, 20, 0, 4], [0, 0, 0, 0, 5], [20, -20, -20, 0, 4],         
+                    [0, 0, 0, 0, 4], [-20, -20, -20, 0, 4], [0, 0, 0, 0, 5], [20, 20, 20, 0, 4], [0, 0, 0, 0, 4]]
+
+        # neck wave
+        neck_w_1 = [[0, 0, 0, 0, 4], [0, 0, 0, -20, 4], [0, 0, 0, 0, 5], [0, 0, 0, 20, 4],
+                [0, 0, 0, 0, 4], [0, 0, 0, -20, 4], [0, 0, 0, 0, 5], [0, 0, 0, 20, 4], [0, 0, 0, 0, 4]]
+        neck_w_2 = [[0, 0, 0, 0, 4], [0, 0, 0, 20, 4], [0, 0, 0, 0, 5], [0, 0, 0, -20, 4],
+                [0, 0, 0, 0, 4], [0, 0, 0, 20, 4], [0, 0, 0, 0, 5], [0, 0, 0, -20, 4], [0, 0, 0, 0, 4]]
+
+        # neck bend
+        neck_b_1 = [[0, 0, 0, 0, 4], [20, 0, 0, -20, 4], [0, 0, 0, 0, 5], [-20, 0, 0, 20, 4],
+                [0, 0, 0, 0, 4], [20, 0, 0, -20, 4], [0, 0, 0, 0, 5], [-20, 0, 0, 20, 4], [0, 0, 0, 0, 4]]
+        neck_b_2 = [[0, 0, 0, 0, 4], [-20, 0, 0, 20, 4], [0, 0, 0, 0, 5], [20, 0, 0, -20, 4],
+                [0, 0, 0, 0, 4], [-20, 0, 0, 20, 4], [0, 0, 0, 0, 5], [20, 0, 0, -20, 4], [0, 0, 0, 0, 4]]
+
+
+        # face_b_2 = [[0, 0, 0, 0, 4], [0, 20, 20, 0, 4], [0, 0, 0, 0, 5], [0, -20, -20, 0, 4],
+        #         [0, 0, 0, 0, 4], [0, 20, 20, 0, 4], [0, 0, 0, 0, 5], [0, -20, -20, 0, 4], [0, 0, 0, 0, 4]]
+
+        steps1 = [[0, 0, 0, 0, 2], [10, 0, 0, 20, 10], [5, 20, 0, 30, 5], [-10, 0, 0, 0, 15] , [-5, 0, 0, 20, 5], [-5, -20, 0, 30, 10], [5, 0, 0, 0, 15], [0, 0, 10, 45, 10], [5, -10, -10, 0, 5], [-10, 0, 0, 0, 15], [-5, 0, 0, 20, 5], [-5, -20, 0, 30, 10],  [0, 0, -10, -45, 10], [5, 10, -10, 0, 5], [-5, -5, 10, 0, 10], [10, 0, 0, 20, 10], [5, 20, 0, 30, 5], [-10, 0, 0, 0, 15], [-5, 0, 0, 20, 5], [-5, -20, 0, 30, 10], [5, 0, 0, 0, 15], [0, 0, 10, 45, 10], [5, -10, -10, 0, 5], [-5, 5, 10, 0, 10]]
         steps2 = [[10, 0, 0, 20, 10], [5, 20, 0, 30, 5], [-10, 0, 0, 0, 15], [-5, 0, 0, 20, 5], [-5, -20, 0, 30, 10], [5, 0, 0, 0, 15], [0, 0, 10, 45, 10], [-5, 10, -10, 0, 5], [5, -5, 10, 0, 10]]
         steps3 = [[-5, 5, 10, 0, 10],  [10, 0, 0, 20, 10], [5, 20, 0, 30, 5], [-10, 0, 0, 0, 15], [-5, 0, 0, 20, 5], [-5, -20, 0, 30, 10], [5, 0, 0, 0, 15], [0, 0, 10, 45, 10], [5, -10, -10, 0, 5], [-5, 5, 10, 0, 10], [10, 0, 0, 20, 10], [5, 20, 0, 30, 5]]
         steps4 = [[5, 0, 0, 0, 15], [0, 0, 10, 45, 10], [-5, 10, -10, 0, 5], [5, -5, 10, 0, 10], [-10, 0, 0, 0, 15]]
 
         steps = []
-        steps.append(steps1)
-        steps.append(steps2)
-        steps.append(steps3)
-        steps.append(steps4)
+
+        steps.append(side_w_1)
+        steps.append(side_w_2)
+        steps.append(side_t_1)
+        steps.append(side_t_2)
+        steps.append(side_b_1)
+        steps.append(side_b_2)
+        steps.append(body_t_1)
+        steps.append(body_t_2)
+        steps.append(neck_w_1)
+        steps.append(neck_w_2)
+        steps.append(neck_b_1)
+        steps.append(neck_b_2)
+
 
         for step_set in steps:
             danceStep = DanceStep(self.sb_motors)
             for eachMove in step_set:
                 danceStep.addMoves(eachMove)
             simpleDanceSteps.append(danceStep)   
-        count = 5
+        count = 1 #5
         
-        self.dance.addFreeStyle(FreeStyle(self.sb_motors))
+        #self.dance.addFreeStyle(FreeStyle(self.sb_motors))
 
         for simpleStep in simpleDanceSteps:
             self.dance.addDanceStep(simpleStep, count)
-            count = count * 2
+            #count = count * 2
         # self.dance.execute() 
         
         
@@ -317,7 +375,7 @@ class GenericBehavior(object):
 def clock_update(event):
     global dance_clock
     dance_clock = dance_clock + 0.1
-    print("                  clock updated", dance_clock)
+    # print("                  clock updated", dance_clock)
 
 if __name__ == '__main__':
     
