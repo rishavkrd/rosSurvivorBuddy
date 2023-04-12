@@ -85,6 +85,7 @@ neck_b_reverse = [[0, 0, 0, 0, 4], [-20, 0, 0, 20, 4], [0, 0, 0, 0, 5], [20, 0, 
         [0, 0, 0, 0, 4], [-20, 0, 0, 20, 4], [0, 0, 0, 0, 5], [20, 0, 0, -20, 4], [0, 0, 0, 0, 4]]
 solo_time = 18
 delta = 10
+sync_time = 102
 
 # STEP 2: Create an GestureRecognizer object.
 base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
@@ -416,7 +417,7 @@ class GenericBehavior(object):
         for simpleStep in simpleDanceSteps:
             count = count +1
             if count == 20:
-                dancePerformance.addDanceStep(simpleStep, 90)
+                dancePerformance.addDanceStep(simpleStep, sync_time)
             # if count == 6:
             #     dancePerformance.addDanceStep(simpleStep, solo_time)
             # if count == 7:
@@ -491,7 +492,7 @@ class GenericBehavior(object):
         for simpleStep in simpleDanceSteps:
             count = count +1
             if count == 20:
-                dancePerformance.addDanceStep(simpleStep, 90)
+                dancePerformance.addDanceStep(simpleStep, sync_time)
             # if count == 6:
             #     dancePerformance.addDanceStep(simpleStep, solo_time+delta)
             # if count == 7:
@@ -566,7 +567,7 @@ class GenericBehavior(object):
         for simpleStep in simpleDanceSteps:
             count = count +1
             if count == 20:
-                dancePerformance.addDanceStep(simpleStep, 90)
+                dancePerformance.addDanceStep(simpleStep, sync_time)
             # if count == 6:
             #     dancePerformance.addDanceStep(simpleStep, solo_time+2*delta)
             # if count == 7:
@@ -642,7 +643,7 @@ class GenericBehavior(object):
         for simpleStep in simpleDanceSteps:
             count = count +1
             if count == 20:
-                dancePerformance.addDanceStep(simpleStep, 90)
+                dancePerformance.addDanceStep(simpleStep, sync_time)
             # if count == 7:
             #     dancePerformance.addDanceStep(simpleStep, solo_time+4*delta)
             # else:
